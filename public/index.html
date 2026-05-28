@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Productos</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f4f9; }
+        .box { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; max-width: 400px; background: white; borderRadius: 5px; }
+        button { cursor: pointer; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h1>Panel de Gestión de Productos</h1>
+
+    <div class="box">
+        <h3>1. Autenticación Obligatoria</h3>
+        <button onclick="login()">Obtener Cookie de Sesión</button>
+        <p id="auth-status" style="color: green; font-weight: bold;"></p>
+    </div>
+
+    <div class="box">
+        <h3>2. Agregar Nuevo Producto</h3>
+        <form id="formProducto">
+            <input type="text" id="nombre" placeholder="Nombre del producto" required><br><br>
+            <input type="number" id="precio" placeholder="Precio" required><br><br>
+            <button type="submit">Guardar en Backend</button>
+        </form>
+    </div>
+
+    <div class="box">
+        <h3>3. Lista de Productos (Capa Datos)</h3>
+        <button onclick="cargarProductos()">Actualizar Lista</button>
+        <ul id="lista"></ul>
+    </div>
+
+    <script>
+        
+        function login() {
+            fetch('/api/login-simulado')
+                .then(res => res.text())
+                .then(data => document.getElementById('auth-status').innerText = data);
+        }
+
+       
+        function cargarProductos() {
+            fetch('/api/productos')
+                .then(res => res.json())
+                .then(productos => {
+                    const lista = document.getElementById('lista');
+                    lista.innerHTML = '';
+                    productos.forEach(p => {
+                        lista.innerHTML += `<li><strong>ID: ${p.id}</strong> - ${p.nombre} ($${p.precio})</li>`;
+                    });
+                });
+        }
+
+        
+        document.getElementById('formProducto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const precio = document.getElementById('precio').value;
+
+            fetch('/api/productos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, precio })
+            })
+            .then(res => {
+                if(res.status === 401) {
+                    alert("Error 401: ¡No autorizado! Debes presionar primero el botón de Obtener Cookie.");
+                }
+                return res.json();
+            })
+            .then(data => {
+                if(!data.error) {
+                    alert("¡Producto creado con éxito!");
+                    cargarProductos();
+                }
+            });
+        });
+
+       
+        cargarProductos();
+    </script>
+</body>
+</html>
