@@ -1,47 +1,54 @@
-#  API REST de Gestión de Productos
+# Proyecto
 
-Este proyecto consiste en un backend desarrollado en **Node.js** y **Express** utilizando una arquitectura limpia organizada en tres capas (Rutas, Controladores y Servicios). El sistema permite listar, consultar detalles y almacenar productos utilizando un archivo JSON como persistencia de datos local, protegiendo los endpoints de escritura mediante cookies de sesión.
+Este proyecto es una aplicacion web de backend hecha con Node.js y Express. Sirve para gestionar una lista de productos usando una arquitectura de tres capas (rutas, controladores y servicios). Los datos se guardan de forma local en un archivo JSON que funciona como la base de datos de la aplicacion.
 
----
+## Estructura del proyecto
 
-## Arquitectura del Proyecto (Capas)
+El codigo esta organizado en las siguientes carpetas:
+- src/routes: Contiene las rutas de la API.
+- src/controllers: Contiene la logica que recibe las peticiones y envia las respuestas.
+- src/services: Contiene las funciones que leen y escriben los datos.
+- src/data: Aqui esta el archivo productos.json que guarda la informacion.
+- public: Aqui esta el archivo index.html con la interfaz de usuario.
 
-La estructura está diseñada siguiendo buenas prácticas para separar las responsabilidades del código:
-* `src/routes/`: Define los puntos de acceso (endpoints) de la aplicación.
-* `src/controllers/`: Maneja la lógica de control, peticiones HTTP y respuestas.
-* `src/services/`: Contiene la lógica de negocio y la manipulación del archivo de datos.
-* `src/data/`: Almacena el archivo JSON que simula la base de datos.
-* `public/`: Contiene la interfaz gráfica estática (Frontend) para interactuar con la API.
+## Rutas de la API
 
----
+La aplicacion cuenta con los siguientes puntos de acceso:
+- GET /api/productos: Devuelve la lista completa de productos guardados.
+- GET /api/productos/:id: Devuelve los datos de un solo producto segun su ID.
+- POST /api/productos: Registra un producto nuevo. Requiere que el usuario tenga la cookie de sesion.
+- GET /api/login-simulado: Crea la cookie de sesion para poder probar el funcionamiento del POST.
 
-## Endpoints de la API
+## Sistema de seguridad
 
-| Método | Endpoint | Descripción | Requiere Autenticación |
-| :--- | :--- | :--- | :--- |
-| **GET** | `/api/productos` | Obtiene la lista completa de productos. | No |
-| **GET** | `/api/productos/:id` | Obtiene el detalle de un producto específico según su ID. | No |
-| **POST** | `/api/productos` | Registra un nuevo producto en el archivo JSON. | **Sí (Cookie)** |
-| **GET** | `/api/login-simulado`| Establece la cookie de sesión necesaria para hacer POST. | No |
+Para proteger la creacion de productos se configuraron cookies de sesion. Si se intenta usar la ruta POST para agregar un producto sin antes haber entrado a la ruta del login simulado para obtener la cookie, el servidor denegara el acceso devolviendo un error 401 Unauthorized.
 
----
+## Como ejecutar el proyecto
 
-## Mecanismo de Seguridad (Autenticación)
+1. Entrar a la carpeta del proyecto desde la terminal:
+cd proyecto-backend
 
-Para poder realizar peticiones de creación (**POST**), el servidor exige la presencia de una cookie de sesión llamada `session_token` con el valor `token_valido_123`. 
-* Si se intenta crear un producto sin haber obtenido la cookie previamente, el backend responderá firmemente con un código de estado **`401 Unauthorized`**.
+2. Instalar los paquetes necesarios:
+npm install
 
----
+3. Iniciar el servidor de Node.js:
+node src/app.js
 
-## Instrucciones de Instalación y Uso
+4. Probar la aplicacion:
+Abrir el navegador de internet e ingresar a la direccion http://localhost:3000
 
-1. **Clonar el repositorio e ingresar a la carpeta:**
-   ```bash
-   cd proyecto-backend
+## Historial de commits realizados
 
-   **Commit 1 
-   git commit -m "feat: estructura de carpetas y archivo de datos inicial"
-   **Commit 2
-   git commit -m "chore: estructura de capas completada y depurando rutas estaticas"
-   **Comit 3
-   git commit -m "feat: integracion completa de maqueta frontend con backend de productos"
+A continuacion se detalla el progreso registrado en el repositorio de Git durante el desarrollo:
+
+1. Primer commit: Base del proyecto
+git commit -m "feat: estructura de carpetas y archivo de datos inicial"
+Explicacion: Se creo el entorno de trabajo y el archivo JSON con los datos iniciales.
+
+2. Segundo commit: Logica de capas
+git commit -m "chore: estructura de capas completada y depurando rutas estaticas"
+Explicacion: Se crearon los archivos de rutas, controladores y servicios para separar las responsabilidades.
+
+3. Tercer commit: Integracion del frontend
+git commit -m "feat: integracion completa de maqueta frontend con backend de productos"
+Explicacion: Se conecto la interfaz HTML de la carpeta public con el funcionamiento del servidor backend.
